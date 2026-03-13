@@ -1,0 +1,325 @@
+{
+  "name": "Склад: Python + Notion",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "31669b81e49080fdaa03d85a43b38de5",
+          "mode": "id"
+        },
+        "title": "=Weekly Sales Report",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Date|date",
+              "date": "={{ $now }}"
+            },
+            {
+              "key": "Total Revenue|number",
+              "numberValue": "={{ $('Code in JavaScript').item.json.total_revenue }}"
+            },
+            {
+              "key": "Total Tax|number",
+              "numberValue": "={{ $('Code in JavaScript').item.json.total_tax }}"
+            },
+            {
+              "key": "Total Quantity|number",
+              "numberValue": "={{ $('Code in JavaScript').item.json.total_quantity }}"
+            },
+            {
+              "key": "Top Produkt|rich_text",
+              "textContent": "={{ $('Code in JavaScript').item.json.top_products }}"
+            },
+            {
+              "key": "Average Price|number",
+              "numberValue": "={{ $('Code in JavaScript').item.json.average_price }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1472,
+        0
+      ],
+      "id": "dd83b4e1-34d7-4b00-9f16-707670cc5408",
+      "name": "Create a database page",
+      "credentials": {
+        "notionApi": {
+          "id": "R3CkLrF0tGSDWATd",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7b903499-9a35-4cab-b4ee-7deb259ede5b",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1g3Tt5OeGB54O5sTpnQrnOe60hg9yH-rK",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        224,
+        0
+      ],
+      "id": "48d5f65f-8b13-4453-9b86-8fbd6263a514",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "jOn8X5uzn1SBbEx7",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "9239844b-64b7-4612-b7f7-9d4243496c51",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a business data analyst.\n\nWrite a short weekly sales report based on the following metrics:\n\nTotal Revenue: {{$json.total_revenue}}\nTotal Tax: {{$json.total_tax}}\nTotal Quantity Sold: {{$json.total_quantity}}\nAverage Price: {{$json.average_price}}\n\nTop Products:\n{{$json.top_products}}\n\nWrite a professional but short business summary explaining:\n\n1. Overall sales performance\n2. Insights about the top products\n3. What the numbers might indicate about demand\n\nKeep the report clear and professional."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        0
+      ],
+      "id": "233a4f2e-ac8c-43f6-bf78-9e166010b999",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "VGahTDlmTxq65iKb",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "harlamovamarina72@gmail.com",
+        "subject": "Отчет по складу готов",
+        "message": "=<p style=\"font-family:Arial,sans-serif; font-size:14px;\">\nHello! Here is your weekly automated report for \n<strong>Week {{ $json.week }}, {{ $json.year }}</strong>:\n</p>\n\n<table style=\"font-family:Arial,sans-serif; border-collapse: collapse; width: 100%; max-width: 600px;\">\n  <thead>\n    <tr style=\"background-color:#f2f2f2;\">\n      <th style=\"padding:8px; text-align:left; border:1px solid #ddd;\">Metric</th>\n      <th style=\"padding:8px; text-align:right; border:1px solid #ddd;\">Value</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td style=\"padding:8px; border:1px solid #ddd;\">Total Revenue</td>\n      <td style=\"padding:8px; text-align:right; border:1px solid #ddd;\">\n        <strong>{{ $('Code in JavaScript1').item.json.total_revenue }}</strong> UAH\n      </td>\n    </tr>\n    <tr>\n      <td style=\"padding:8px; border:1px solid #ddd;\">Total Tax</td>\n      <td style=\"padding:8px; text-align:right; border:1px solid #ddd;\">\n        <strong>{{ $('Code in JavaScript1').item.json.total_tax }}</strong> UAH\n      </td>\n    </tr>\n    <tr>\n      <td style=\"padding:8px; border:1px solid #ddd;\">Total Quantity</td>\n      <td style=\"padding:8px; text-align:right; border:1px solid #ddd;\">\n        <strong>{{ $('Code in JavaScript1').item.json.total_quantity }}</strong> items\n      </td>\n    </tr>\n  </tbody>\n</table>\n\n<p><strong>Chart:</strong></p>\n<img src=\"{{ $('Code in JavaScript1').item.json.chart }}\" style=\"max-width:100%; height:auto; border:1px solid #ddd; padding:4px;\" alt=\"Weekly Chart\"/>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1920,
+        0
+      ],
+      "id": "ecf49dfc-0288-4882-a140-3c3630b022ea",
+      "name": "Send a message",
+      "webhookId": "1a33c6dc-ebf0-4b40-a583-3f1f63444230",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "yRui9nKH2UweCdMu",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let totalRevenue = 0;\nlet totalTax = 0;\nlet totalQuantity = 0;\n\n// Считаем общие метрики\nfor (const item of $input.all()) {\n  totalRevenue += Number(item.json[\"Сумма_UAH\"]) || 0;\n  totalTax += Number(item.json[\"Налог_UAH\"]) || 0;\n  totalQuantity += Number(item.json[\"Количество\"]) || 0;\n}\n\n// Средняя цена\nlet average_price = totalQuantity ? totalRevenue / totalQuantity : 0;\n\n// Считаем топ 3 товара по сумме продаж\nlet products = {};\nfor (const item of $input.all()) {\n  const productName = item.json[\"Товар\"];\n  const revenue = Number(item.json[\"Сумма_UAH\"]) || 0;\n\n  if (!products[productName]) products[productName] = 0;\n  products[productName] += revenue;\n}\n\n// Сортируем по сумме и берём топ 3\nlet topProducts = Object.entries(products)\n  .sort((a,b) => b[1] - a[1])\n  .slice(0,3)\n  .map(p => `${p[0]} (${p[1].toFixed(2)} UAH)`);\n\n// Возвращаем все поля в одном объекте\nreturn [\n  {\n    json: {\n      total_revenue: totalRevenue,\n      total_tax: totalTax,\n      total_quantity: totalQuantity,\n      average_price: Number(average_price.toFixed(2)),\n      top_products: topProducts.join(\", \")\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        0
+      ],
+      "id": "477e03b8-2012-4665-993a-aaa621601726",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Берём первый элемент входных данных\nconst item = $input.first().json;\n\n// Формируем массив метрик\nconst data = [\n  { metric: \"Total Revenue\", value: item.total_revenue },\n  { metric: \"Total Tax\", value: item.total_tax },\n  { metric: \"Total Quantity\", value: item.total_quantity }\n];\n\n// Массивы для графика\nconst labels = data.map(i => i.metric);\nconst values = data.map(i => i.value);\n\n// Создаём конфиг для QuickChart\nconst chartConfig = {\n  type: \"bar\",\n  data: {\n    labels: labels,\n    datasets: [{\n      label: \"Store Metrics\",\n      data: values\n    }]\n  }\n};\n\n// Кодируем конфиг в URL\nconst chartUrl = \"https://quickchart.io/chart?c=\" + encodeURIComponent(JSON.stringify(chartConfig));\n\n// Возвращаем JSON с метриками и ссылкой на график\nreturn [{\n  json: {\n    total_revenue: item.total_revenue,\n    total_tax: item.total_tax,\n    total_quantity: item.total_quantity,\n    chart: chartUrl\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        0
+      ],
+      "id": "8a3a6940-7908-4162-88b4-a3ba9c69ce90",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const now = new Date();\nconst startYear = new Date(now.getFullYear(), 0, 1);\nconst weekNumber = Math.ceil(((now - startYear) / 86400000 + startYear.getDay() + 1)/7);\nreturn [\n  {\n    json: {\n      week: weekNumber,\n      year: now.getFullYear()\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1696,
+        0
+      ],
+      "id": "87e0f395-6634-49f5-99a5-4689f078b4d1",
+      "name": "Code in JavaScript2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Create a database page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a database page": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c34ac4a7-1192-4939-8b1a-d15a81b28bb7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "168f0e6e5d4d7b398d49eb8f7d4b090c169a7734c1f8a1f71261bae3fa3b4fbf"
+  },
+  "id": "rIyw1QQdRDXvmqVy",
+  "tags": []
+}
