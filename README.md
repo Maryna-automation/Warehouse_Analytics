@@ -70,3 +70,8 @@ python inventory.py
 The project processes warehouse data stored in Excel.
 
 ![Excel Example](excel_data_example.png)
+## Notion Table Example
+
+The processed warehouse data is automatically sent to Notion.
+
+![Notion Table Example](notion_table_example.png)
