@@ -1,0 +1,44 @@
+# Warehouse Analytics Automation
+
+Python project for warehouse analytics with AI reporting and automation.
+
+## Technologies
+
+- Python
+- Pandas
+- Matplotlib
+- Gemini AI
+- n8n
+- GitHub
+
+## Project Description
+
+This project analyzes warehouse data, calculates sales metrics and generates an AI-based analytical report.
+
+The script processes Excel data and produces:
+- warehouse data analysis
+- sales statistics calculation
+- tax calculations
+- data visualization (chart)
+- automation workflow with n8n
+- automated AI analysis
+
+## Files
+
+inventory.py – main analytics script
+
+Склад_Python + Notion.json – n8n automation workflow
+
+inventory_chart.png – example generated chart
+
+## Example Chart
+
+![Warehouse Chart](inventory_chart.png)
+
+## Automation
+
+The Python script integrates with n8n automation to send reports to external services such as Notion or email.
+
+## Author
+
+Maryna – automation and data analytics learning project
