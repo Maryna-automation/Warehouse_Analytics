@@ -52,3 +52,21 @@ This project uses n8n to automate the data pipeline.
 The automation sends a generated report via Gmail.
 
 ![Gmail Report](gmail_report_example.png)
+
+## How to Run
+
+1. Install Python
+2. Install required libraries
+
+pip install pandas matplotlib python-dotenv google-generativeai
+
+3. Add your API key to .env
+
+4. Run the script
+
+python inventory.py
+## Example Input Data
+
+The project processes warehouse data stored in Excel.
+
+![Excel Example](excel_data_example.png)
