@@ -47,3 +47,8 @@ Maryna – automation and data analytics learning project
 This project uses n8n to automate the data pipeline.
 
 ![n8n workflow](n8n_workflow.png)
+## Example Automated Report
+
+The automation sends a generated report via Gmail.
+
+![Gmail Report](gmail_report_example.png)
