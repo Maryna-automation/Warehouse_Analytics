@@ -42,3 +42,8 @@ The Python script integrates with n8n automation to send reports to external ser
 ## Author
 
 Maryna – automation and data analytics learning project
+## Automation Workflow
+
+This project uses n8n to automate the data pipeline.
+
+![n8n workflow](n8n_workflow.png)
