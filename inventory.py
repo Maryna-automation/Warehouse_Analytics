@@ -39,7 +39,7 @@ ai_advice = "AI сейчас отдыхает 😴"
 try:
     inventory_text = summary.to_string(index=False)
     prompt = f"Ты аналитик склада. Проанализируй остатки:\n{inventory_text}\nДай короткий совет."
-    response = genai.GenerativeModel('gemini-3-flash-latest').generate_content(prompt, request_options={"timeout": 20})
+    response = genai.GenerativeModel('gemini-2.5-flash').generate_content(prompt, request_options={"timeout": 20})
     ai_advice = response.text
 except Exception as e:
     print(f"AI не ответил: {e}")
@@ -83,7 +83,13 @@ for col in ['Артикул','Товар','Дата_Поставки']:
         df_to_send[col] = df_to_send[col].astype(str)
 
 try:
-    response = requests.post(webhook_url, json=df_to_send.to_dict(orient='records'))
+    # Создаем один общий пакет: данные + совет ИИ
+    payload = {
+        "items": df_to_send.to_dict(orient='records'),
+        "ai_recommendation": ai_advice
+    }
+    response = requests.post(webhook_url, json=payload)
+    print(f"Ответ от n8n: {response.status_code}")
     print(f"Ответ от n8n: {response.status_code}")
 except Exception as e:
     print(f"Ошибка отправки: {e}")
